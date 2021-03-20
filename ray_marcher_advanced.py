@@ -11,7 +11,7 @@
 #   W,A,S,D		move around
 # 	SPACE		move up
 # 	left CTRL	move down
-# 	left SHIFT	move down
+# 	left SHIFT	slow movement by x10
 # 	numpad +	increase speed
 # 	numpad -	decrease speed
 # looking:
@@ -48,8 +48,6 @@ from datetime import datetime
 
 import os
 os.environ['SDL_VIDEO_CENTERED'] = '1'
-
-import time
 
 #Size of the window and rendering
 win_size = (1280, 720)
@@ -111,7 +109,7 @@ look_y = 0.0
 #
 # Set initial values of '0' through '6' below
 #----------------------------------------------
-keyvars = [3.28, 0.34, 2.0, 1.0, 1.0, 1.0]
+keyvars = [0.0, 0.34, 2.0, 1.0, 1.0, 1.0]
 
 #----------------------------------------------
 #            Fractal Examples Below
@@ -133,7 +131,7 @@ def butterweed_hills():
 		obj.add(FoldScaleTranslate(1.5, (-1.0,-0.5,-0.7)))
 		obj.add(OrbitSum((0.5, 0.03, 0.5)))
 		obj.add(FoldRotateX('0'))
-		obj.add(FoldRotateY('1'))
+		obj.add(FoldRotateY(2.34))
 	obj.add(Sphere(1.0, color='orbit'))
 	return obj
 
@@ -162,22 +160,23 @@ def mausoleum():
 
 def menger():
 	obj = Object()
-	for _ in range(8):
+	for _ in range(12):
 		obj.add(FoldAbs())
 		obj.add(FoldMenger())
 		obj.add(FoldScaleTranslate(3.0, (-2,-2,0)))
 		obj.add(FoldPlane((0,0,-1), -1))
-	obj.add(Box(2.0, color=(.2,.5,1)))
+		obj.add(FoldRotateX('0'))
+	obj.add(Box(2.0, color=hex_to_rgb('#FF5DCF')))
 	return obj
 
-def mengerCustom():
+def menger_custom():
 	obj = Object()
-	for _ in range(8):
+	for _ in range(12):
 		obj.add(FoldAbs())
 		obj.add(FoldMenger())
 		obj.add(FoldScaleTranslate(3.0, (-2,-2,0)))
 		obj.add(FoldPlane((0,0,-1), -1))
-	obj.add(Box(2.0, color=(.2,.5,1)))
+	obj.add(Box(4.0, color=(.2,.5,1)))
 	return obj
 
 def custom():
@@ -319,6 +318,7 @@ if __name__ == '__main__':
 	camera = Camera()
 	camera['ANTIALIASING_SAMPLES'] = 2
 	camera['AMBIENT_OCCLUSION_STRENGTH'] = 0.03
+	camera['AMBIENT_OCCLUSION_COLOR_DELTA'] = hex_to_rgb('#FF5DCF')
 	#======================================================
 
 	shader = Shader(obj_render)
@@ -519,6 +519,9 @@ if __name__ == '__main__':
 					enter_pressed = True
 				else:
 					enter_pressed = False
+
+				if all_keys[pygame.K_F2]:
+					print("Current position: [" + str(mat[3][0]) + ", " + str(mat[3][1]) + ", " + str(mat[3][2]) + "]")
 
 			if pygame.key.get_focused():
 				if gimbal_lock:
