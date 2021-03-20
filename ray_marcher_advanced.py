@@ -22,6 +22,8 @@
 # 	R 			start/stop recording
 # 	P 			start playback and saving of video
 # 	C 			screenshot
+# utility:
+# 	F2			log current coordinates to console
 #
 # CHANGELOG:
 # 1.0: init
